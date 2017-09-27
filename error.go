@@ -16,15 +16,53 @@ func DisableDebug(){
 	atomic.StoreInt32(&debug,0)
 }
 
+//判断两错误是否同源相等
+func Equal(e1,e2 error)bool{
+	if e1 == e2 {return true}
+	if e1 == nil || e2 == nil{return false}
+	E1,ok1 :=e1.(*Error)
+	E2,ok2 :=e2.(*Error)
+	if ok2 && !ok1{return E2.rawErr == e1}
+	if ok1 && !ok2{return E1.rawErr == e2}
+
+	if E1.rawErr == E2.rawErr && e1!=nil{
+		return true
+	}
+	if E1.Info == E2.Info && E1 == E2 {
+		return true
+	}
+	return false
+}
+
+
 type Error struct {
 	Info string
 	rawErr error     // 保存原始错误信息
 	stackPC []uintptr // 保存函数调用栈指针
 }
-//func (e *Error)Error()string{
+
+func (e *Error) MarshalJSON() ([]byte, error){
+	return []byte(fmt.Sprintf(`"%s"`,e.Info)),nil
+}
+
+func (e *Error) UnmarshalJSON(d []byte) error{
+	e.Info = string(d)
+	return nil
+}
+
+func (e *Error) String() string {
+	return e.Info
+}
 //
-//	return fmt.Sprintf("%s:%d:%s",e.File,e.Line,e.Info)
-//}
+func (e *Error) MarkPos() *Error {
+	pcs := make([]uintptr, 32)
+	count := runtime.Callers(2, pcs)
+	return &Error{
+		Info:e.Info,
+		stackPC:pcs[:count],
+		rawErr:e.rawErr,
+	}
+}
 
 // CallStack get function call stack
 func (e *Error) Error() string {
@@ -54,34 +92,42 @@ func (e *Error) Error() string {
 	return fmt.Sprintf("%s\n%s",e.Info,result)
 }
 
-func New(s interface{})error{
+func New(s interface{})*Error{
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
-	return &Error{
+	e:=&Error{
 		Info:fmt.Sprint(s),
 		stackPC:pcs[:count],
-		}
+	}
+	switch raw:= s.(type){
+	case error:
+		e.rawErr = raw
+	default:
+		e.rawErr = e
+	}
+	return e
 }
 
-func Errorf(format string, a ...interface{}) error {
+
+func Errorf(format string, a ...interface{}) *Error {
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
-
-	return &Error{
-
+	e:=&Error{
 		Info:fmt.Sprintf(format, a...),
 		stackPC:pcs[:count],
-
 	}
+	e.rawErr = e
+	return e
 }
 
-func Errorln(a ...interface{}) error {
+func Errorln(a ...interface{}) *Error {
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
-	return &Error{
+	e := &Error{
 		Info:fmt.Sprintln(a...),
 		stackPC:pcs[:count],
-
 	}
+	e.rawErr = e
+	return e
 }
 
