@@ -34,6 +34,9 @@ func Equal(e1,e2 error)bool{
 	return false
 }
 
+type Errorer interface {
+	Error() *Error
+}
 
 type Error struct {
 	Info string
@@ -50,6 +53,9 @@ func (e *Error) UnmarshalJSON(d []byte) error{
 	return nil
 }
 
+func (e *Error) IsNil() bool {
+	return e.Info == ""
+}
 func (e *Error) String() string {
 	return e.Info
 }
