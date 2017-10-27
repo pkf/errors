@@ -90,6 +90,9 @@ func (e *Error) Error() string {
 			// trim GOPATH or GOROOT prifix
 			f.File = string(f.File[index+4:])
 		}
+		if f.Function == "runtime.main"{
+			break
+		}
 		result = fmt.Sprintf("%s%s\n\t%s:%d\n", result, f.Function, f.File, f.Line)
 		if !more {
 			break
