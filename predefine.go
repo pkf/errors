@@ -7,6 +7,9 @@ import (
 
 type PreDefineCode int
 
+func (e PreDefineCode) Int() int {
+	return int(e)
+}
 func (e PreDefineCode) New(s interface{}) *Error {
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
@@ -39,7 +42,7 @@ func (e PreDefineCode) Errorln(a ...interface{}) *Error {
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
 
-	e1 :=  &Error{
+	e1 := &Error{
 		Info:    fmt.Sprintln(a...),
 		Code:    int(e),
 		stackPC: pcs[:count],
@@ -48,4 +51,3 @@ func (e PreDefineCode) Errorln(a ...interface{}) *Error {
 	return e1
 
 }
-
