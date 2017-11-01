@@ -53,11 +53,17 @@ type Error struct {
 	stackPC []uintptr // 保存函数调用栈指针
 }
 
-func (e *Error) IsNil() bool {
-	return e.Info == ""
+
+func (e *Error) RawError() error {
+	return e.rawErr
 }
+
 func (e *Error) String() string {
 	return e.Info
+}
+
+func (e *Error) Typeof(i PreDefineCode) bool {
+	return PreDefineCode(e.Code) == i
 }
 
 //
@@ -165,4 +171,3 @@ func ErrorlnWithCode(c int, a ...interface{}) *Error {
 func Errorln(a ...interface{}) *Error {
 	return errorln(-1, a)
 }
-
