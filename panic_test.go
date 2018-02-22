@@ -20,7 +20,7 @@ func TestRecoverFn(t *testing.T) {
 		fmt.Println(e)
 		fmt.Println("---------------")
 	}()
-	defer RecoverFn(func(err *Error) { e = err })
+	defer RecoverFn(func(err error) { e = err })
 	panic("123")
 
 }

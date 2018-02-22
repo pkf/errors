@@ -62,10 +62,10 @@ func (e *Error) String() string {
 	return e.Info
 }
 
-func (e *Error) Typeof(c PreDefineCode) bool {
+func (e *Error) TypeOf(c PreDefineCode) bool {
 	return PreDefineCode(e.Code) == c
 }
-func (e *Error) Typein(cs... PreDefineCode) bool {
+func (e *Error) TypeIn(cs... PreDefineCode) bool {
 	for _,c:=range cs{
 		if e.Code == int(c){
 			return true

@@ -39,15 +39,13 @@ func RecoverToError(err *error) {
 		*err = Err_PanicRecover.New(buf)
 	}
 }
-func RecoverFn(fn func(err *Error)) {
-	var err *Error
+func RecoverFn(fn func(err error)) {
 	e := recover()
 	if e != nil {
 		buf := readStack()
-		err = Err_PanicRecover.New(buf)
-	}
-	if fn != nil {
-		fn(err)
+		if fn != nil {
+			fn(Err_PanicRecover.New(buf))
+		}
 	}
 }
 func Recover() {
