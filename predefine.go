@@ -24,15 +24,21 @@ var (
 	Err_NotSupport     = PreDefineCode(-31) //不支持
 	Err_InvalidPacket  = PreDefineCode(-32) //数据包错误
 	Err_BufferOverflow = PreDefineCode(-33) //缓冲溢出
+
+	Err_NotFound = PreDefineCode(-40) //没有找到该资源
+
 )
 
 func (e PreDefineCode) Int() int {
 	return int(e)
 }
 func (e PreDefineCode) New(s interface{}) *Error {
+	if s == nil{
+		return nil
+	}
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(2, pcs)
-	if s1,ok :=s.([]byte);ok{
+	if s1, ok := s.([]byte); ok {
 		s = string(s1)
 	}
 	e1 := &Error{

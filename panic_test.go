@@ -34,7 +34,7 @@ func TestRecoverPrint(t *testing.T) {
 }
 
 func TestRecoverPrintf(t *testing.T) {
-	defer RecoverPrintf(console.Printf,"%s:%s",console.HiRed("Panic"))
+	defer RecoverPrintf(console.Printf, "%s:%s", console.HiRed("Panic"))
 	panic("123")
 }
 

@@ -7,8 +7,8 @@ import (
 
 type (
 	PrintlnFn func(a ...interface{}) (n int, err error)
-	PrintFn func(a ...interface{}) (n int, err error)
-	PrintfFn func(format string, a ...interface{}) (n int, err error)
+	PrintFn   func(a ...interface{}) (n int, err error)
+	PrintfFn  func(format string, a ...interface{}) (n int, err error)
 )
 
 func RecoverPrintln(p PrintlnFn) {

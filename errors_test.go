@@ -1,8 +1,8 @@
 package errors
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestPrint(t *testing.T) {
@@ -12,6 +12,7 @@ func TestPrint(t *testing.T) {
 }
 
 var case1 = New("error case 1")
-func printCase()error{
+
+func printCase() error {
 	return case1.MarkPos()
 }

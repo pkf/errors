@@ -1,8 +1,8 @@
 package errors
 
 import (
-	"runtime"
 	"fmt"
+	"runtime"
 	"strings"
 	"sync/atomic"
 )
@@ -53,7 +53,6 @@ type Error struct {
 	stackPC []uintptr // 保存函数调用栈指针
 }
 
-
 func (e *Error) RawError() error {
 	return e.rawErr
 }
@@ -65,9 +64,9 @@ func (e *Error) String() string {
 func (e *Error) TypeOf(c PreDefineCode) bool {
 	return PreDefineCode(e.Code) == c
 }
-func (e *Error) TypeIn(cs... PreDefineCode) bool {
-	for _,c:=range cs{
-		if e.Code == int(c){
+func (e *Error) TypeIn(cs ...PreDefineCode) bool {
+	for _, c := range cs {
+		if e.Code == int(c) {
 			return true
 		}
 	}
@@ -118,6 +117,9 @@ func (e *Error) Error() string {
 }
 
 func newError(c int, s interface{}) *Error {
+	if s == nil {
+		return nil
+	}
 	pcs := make([]uintptr, 32)
 	count := runtime.Callers(3, pcs)
 	e := &Error{
